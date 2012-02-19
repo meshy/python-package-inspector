@@ -4,7 +4,7 @@ from neo4django.db import models
 
 class PythonNode(models.NodeModel):
     name = models.StringProperty(indexed=True)
-    owner = models.Relationship(PythonNode,
+    owner = models.Relationship('PythonNode',
         rel_type=neo4django.Outgoing.OWNER,
         single=True,
         related_name='members')
