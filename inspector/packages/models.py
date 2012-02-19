@@ -1,6 +1,8 @@
 import neo4django
 from neo4django.db import models
 
+from packages.base_models import PythonNode, CodeNode, DocStringMixin, CallableMixin
+
 
 class Package(models.NodeModel):
     name = models.StringProperty(indexed=True)
@@ -17,31 +19,7 @@ class PackageVersion(models.NodeModel):
         return '{package} {ver}'.format(package=self.package, ver=self.name)
 
 
-class PythonNode(models.NodeModel):
-    name = models.StringProperty(indexed=True)
-
-    class Meta:
-        abstract = True
-
-
-class ChildPythonNode(PythonNode):
-    owner = models.Relationship(PythonNode,
-        rel_type=neo4django.Outgoing.OWNER,
-        single=True,
-        related_name='members')
-
-    class Meta:
-        abstract = True
-
-
-class DocstringMixin(object):
-    docstring = models.StringProperty()
-
-    class Meta:
-        abstract = True
-
-
-class Module(DocstringMixin, ChildPythonNode):
+class Module(DocStringMixin, PythonNode):
     package_version = models.Relationship(PackageVersion,
         rel_type=neo4django.Outgoing.VERSION,
         single=True,
@@ -49,22 +27,6 @@ class Module(DocstringMixin, ChildPythonNode):
 
     def __unicode__(self):
         return self.name
-
-
-class CodeNode(ChildPythonNode):
-    code = models.StringProperty()
-    line_number = models.IntegerProperty()
-
-    class Meta:
-        abstract = True
-
-
-class CallableMixin(DocstringMixin):
-    arguments = models.StringProperty()
-
-    class Meta:
-        abstract = True
-
 
 class Function(CallableMixin, CodeNode):
     def __unicode__(self):
@@ -75,7 +37,8 @@ class BasicCode(CodeNode):
     def __unicode__(self):
         return 'Codeblock: {0}'.format(self.name)
 
-class Klass(CallableMixin, ChildPythonNode):
+
+class Klass(CallableMixin, PythonNode):
     superclasses = models.Relationship(PackageVersion,
         rel_type=neo4django.Outgoing.SUPER_CLASS,
         related_name='subclasses')
