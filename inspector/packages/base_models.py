@@ -1,11 +1,11 @@
-import neo4django
+from neo4django import Outgoing
 from neo4django.db import models
 
 
 class PythonNode(models.NodeModel):
-    name = models.StringProperty(indexed=True)
+    name = models.StringProperty()
     owner = models.Relationship('PythonNode',
-        rel_type=neo4django.Outgoing.OWNER,
+        rel_type=Outgoing.OWNER,
         single=True,
         related_name='members')
 

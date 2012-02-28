@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load url from future %}
 
 
 {% block page_title %}Welcome!{% endblock %}
 
 {% block content %}
 <h1>Welcome to the home page!</h1>
+<p>Go to <a href="{% url 'package_list' %}">list of packages</a></p>
 {% endblock content %}

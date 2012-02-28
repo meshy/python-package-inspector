@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+
+{% block page_title %}{{ object.name }}{% endblock %}
+
+
+{% block content %}
+<h1>{{ object }}</h1>
+<ul>
+    {% for member in object.members %}
+        <li>
+            {% with member.get_absolute_url as abs_url%}
+                {% if abs_url %}<a href="{{ abs_url }}">{% endif %}
+                {{ member.name }}
+                {% if abs_url %}</a>{% endif %}
+            {% endwith %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock content %}

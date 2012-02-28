@@ -98,6 +98,7 @@ INSTALLED_APPS = (
 
     'inspector',
     'packages',
+    'neo4django',
 )
 
 # A sample logging configuration. The only tangible logging
