@@ -30,17 +30,21 @@ class PackageVersion(models.NodeModel):
         return '{package} {ver}'.format(package=self.package, ver=self.name)
 
 
-class Module(base_models.DocStringMixin, base_models.PythonNode):
+class Module(base_models.PythonNode):
     package_version = models.Relationship(PackageVersion,
         rel_type=neo4django.Outgoing.BELONGS_TO,
         single=True,
         related_name='modules')
+    docstring = models.StringProperty()
 
     def __unicode__(self):
         return self.name
 
 
-class Function(base_models.CallableMixin, base_models.CodeNode):
+class Function(base_models.CodeNode):
+    docstring = models.StringProperty()
+    arguments = models.StringProperty()
+
     def __unicode__(self):
         return 'def {0}({1})'.format(self.name, self.arguments)
 
@@ -50,15 +54,20 @@ class BasicCode(base_models.CodeNode):
         return 'Codeblock: {0}'.format(self.name)
 
 
-class Klass(base_models.CallableMixin, base_models.PythonNode):
+class Klass(base_models.PythonNode):
     superclasses = models.Relationship(PackageVersion,
         rel_type=neo4django.Outgoing.SUPER_CLASS,
         related_name='subclasses')
+    docstring = models.StringProperty()
+    arguments = models.StringProperty()
 
     def __unicode__(self):
         return 'class {0}({1})'.format(self.name, self.arguments)
 
 
-class Method(base_models.CallableMixin, base_models.CodeNode):
+class Method(base_models.CodeNode):
+    docstring = models.StringProperty()
+    arguments = models.StringProperty()
+
     def __unicode__(self):
         return 'def {0}({1})'.format(self.name, self.arguments)
